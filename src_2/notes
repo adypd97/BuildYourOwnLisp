@@ -1,0 +1,16 @@
+re-write rules are just repeat structures in a language. Explained here with an example:
+	1. In natural language: we can say "a cat is looking at me". But we can also say "a cat and dog are looking at me"
+	   what happened here is that, because the language is recursive, we can add as many nouns as possible while still
+	   maintaining the 'rules' of the language. 
+	2. In programming language too we see similar repeat, recursive substructures which still follow the rule but
+	   can very well be constructed. Ex an if statement, which in turn could have an if statement and so on.
+
+So, there are possibly infinite things that can be written in a language of this kind. But with the re-write rules we 
+only need a finite set of steps to interpret them, which is the key insight of Chomsky.
+
+A GRAMMAR in the Chomsky description is a SET OF RE-WRITE RULES that can be used to process/interpret possibly
+infinite set of statements in a language.
+
+To understand a language we need to build a grammar that describes that language. A set of re-write rules in other words 
+that will allow us to interpret all the things that can be said in that language.
+
