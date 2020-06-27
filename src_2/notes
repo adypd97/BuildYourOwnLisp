@@ -14,3 +14,18 @@ infinite set of statements in a language.
 To understand a language we need to build a grammar that describes that language. A set of re-write rules in other words 
 that will allow us to interpret all the things that can be said in that language.
 
+mpc
+	mpc is the library that will build this grammar, create an internal representation, evaluate the things that we write
+	in the language.
+	
+	mpc is a Parser Combinator library, that allows to build parsers that are programs that understand particular
+	languages.
+
+
+What could code that looks like 'grammar' look like ?
+	Suppose we use mpc to recognize a language called Shiba Inu (Doge), then the rules look like so
+
+	an Adjective is either 'wow', 'many', 'so', and 'such'
+	a Noun is either 'lisp', 'language', 'c', 'book' and 'build'
+	a Phrase is and Adjective followed by a Noun
+	A Doge is a zero or More Phrases
