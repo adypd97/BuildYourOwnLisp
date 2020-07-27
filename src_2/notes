@@ -1,3 +1,6 @@
+
+COMPILATION: cc -std=c99 parsing.c mpc.c -ledit -lm -o parsing
+
 Natural language is built up of recursive and repeat substructures.
 re-write rules are just repeat structures in a language. Explained here with an example:
 	1. In natural language: we can say "a cat is looking at me". But we can also say "a cat and dog are looking at me"
