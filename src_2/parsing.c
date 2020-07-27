@@ -21,12 +21,14 @@ char* readline(char* prompt) {
 void add_history(char* unused) {}
 
 /* Otherwise include the editline headers */
+
 #else 
 
 // on MAC this will allow us to edit our input 
 // to the REPL, so that weird characters don't appear
 // when we press arrows keys 
 #include <editline/readline.h>
+//#include <editline/history.h>
 #endif
 
 /* Declare a buffer for user input of size 2048 */
@@ -34,6 +36,24 @@ void add_history(char* unused) {}
 //static char input[INPUT_SIZE];
 
 int main(int argc, char* argv[argc+1]) {
+	// Create some parsers, explained in Polish Notation Section in notes
+	mpc_parser_t* Number = mpc_new("number");
+	mpc_parser_t* Operator = mpc_new("operator");
+	mpc_parser_t* Expr = mpc_new("expr");
+	mpc_parser_t* Lispy = mpc_new("lispy");
+	
+	// Define them with the following language
+	mpca_lang(MPCA_LANG_DEFAULT,
+		"
+			number	: /-?[0-9]+/ ;	\
+			operator: '+' | '-' | '*' | '/' ;	\
+			expr	: <number> | '(' <operator> <expr>+ ')' ;	\
+			lispy	: /^/ <operator> <expr>+ /$/ ;	\
+		",
+		Number, Operator, Expr, Lispy);
+
+
+
 	// Print Version and Exit Information
 	printf("Lispy Version 0.0.0.0.1\n");
 	printf("Press Ctrl-C to Exit\n");
@@ -50,6 +70,8 @@ int main(int argc, char* argv[argc+1]) {
 		// free retrieved input
 		free(input);
 	}
-
+	
+	// Undefine and Delete the parsers.
+	mpc_cleanup(4, Number, Operator, Expr, Lispy);
 	return 0;
 }

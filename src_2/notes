@@ -1,3 +1,4 @@
+Natural language is built up of recursive and repeat substructures.
 re-write rules are just repeat structures in a language. Explained here with an example:
 	1. In natural language: we can say "a cat is looking at me". But we can also say "a cat and dog are looking at me"
 	   what happened here is that, because the language is recursive, we can add as many nouns as possible while still
@@ -10,6 +11,8 @@ only need a finite set of steps to interpret them, which is the key insight of C
 
 A GRAMMAR in the Chomsky description is a SET OF RE-WRITE RULES that can be used to process/interpret possibly
 infinite set of statements in a language.
+
+A GRAMMAR is just a finite set of formal re-write rule for understanding a language in a computer.
 
 To understand a language we need to build a grammar that describes that language. A set of re-write rules in other words 
 that will allow us to interpret all the things that can be said in that language.
@@ -29,3 +32,42 @@ What could code that looks like 'grammar' look like ?
 	a Noun is either 'lisp', 'language', 'c', 'book' and 'build'
 	a Phrase is and Adjective followed by a Noun
 	A Doge is a zero or More Phrases
+
+	To understand this language we can define Adjectives and Nouns. For this we create two parsers,
+	by type mpc_parser_t* and store them in variables Adjective and Noun respectively.
+	Now mpc_or will allow us to create a parser for each of the above and mpc_sym will wrap the 
+	inital strings into grammar units if you will. See ex
+
+	ex
+		mpc_parser_t* Adjective = mpc_or(4, 
+			mpc_sym("wow"), mpc_sym("many"),
+			mpc_sym("so"), mpc_sym("such")
+		);
+
+		mpc_parser_t* Noun = mpc_or(5, 
+			mpc_sym("lisp"), mpc_sym("language"),
+			mpc_sym("book"), mpc_sym("build"),
+			mpc_sym("c")
+		);
+
+	Phrases can be create as follows: 
+		mpc_parser_t* Phrase = mpc_and(2, mpcf_strfold,
+			Adjective, Noun, free);
+
+	To define Doge (our language) we specify 0 or more of some parser.
+	Doge parser just looks for zero or more of another parser
+	mpc_parser_t* Doge = mpc_many(mpcf_strfold, Phrase);
+
+
+
+Polish Notation:
+
+Here we are trying to create a grammar for understanding the lisp style of 
+writing arithemtic expression which have operator as a prefix.
+
+To do this we identified 4 parsers: Number, Operator, Expr and Lispy
+Number: denotes a number with starting - (optional for negative numbers), followed by one or more 
+	characters from 0 to 9.
+Operator: '+', '-', '/', '*'
+Expr: Expression, either Number or '(', an Operator, one or more Expr, and an ')'.
+Program/Lispy: that start of input, an Operator, one or more Expressions (Expr) and the end of input.
