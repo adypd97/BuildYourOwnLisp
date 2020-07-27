@@ -36,6 +36,44 @@ void add_history(char* unused) {}
 //#define INPUT_SIZE 2048
 //static char input[INPUT_SIZE];
 
+// Use operator string to see which operation to perform
+long eval_op(long x, char* op, long y) {
+	if (strcmp(op, "+") == 0) { return x + y; }
+	if (strcmp(op, "add") == 0) { return x + y; }
+	if (strcmp(op, "-") == 0) { return x - y; }
+	if (strcmp(op, "sub") == 0) { return x - y; }
+	if (strcmp(op, "*") == 0) { return x * y; }
+	if (strcmp(op, "mul") == 0) { return x * y; }
+	if (strcmp(op, "/") == 0) { return x / y; }
+	if (strcmp(op, "div") == 0) { return x / y; }
+	if (strcmp(op, "%") == 0) { return x % y; }
+	return 0;
+}
+
+// Traverse the AST to compute the value of the expression
+// input at the REPL.
+long eval(mpc_ast_t* t) {
+	// base case: if tag is a number
+	// then just return its content as long
+	if(strstr(t->tag, "number")) {
+		return atoi(t->contents);
+	}
+
+	// the operator in a 'expr' is always the 
+	// second child. since first is '('
+	char* op = t->children[1]->contents;
+
+	long x = eval(t->children[2]);
+
+	int i = 3;
+	while(strstr(t->children[i]->tag, "expr")) {
+		x = eval_op(x, op, eval(t->children[i]));
+		i++;
+	}
+
+	return x;
+}
+
 int main(int argc, char* argv[argc+1]) {
 	// Create some parsers, explained in Polish Notation Section in notes
 	mpc_parser_t* Number = mpc_new("number");
@@ -74,7 +112,9 @@ int main(int argc, char* argv[argc+1]) {
 		mpc_result_t r;
 		if (mpc_parse("<stdin>", input, Lispy, &r)) {
 			/* On success print the AST */
-			mpc_ast_print(r.output);
+			//mpc_ast_print(r.output);
+			long result = eval(r.output);
+			printf("%li\n", result);
 			mpc_ast_delete(r.output);
 		} else {
 			/* Otherwise print error */

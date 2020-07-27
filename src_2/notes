@@ -74,3 +74,36 @@ Number: denotes a number with starting - (optional for negative numbers), follow
 Operator: '+', '-', '/', '*'
 Expr: Expression, either Number or '(', an Operator, one or more Expr, and an ')'.
 Program/Lispy: that start of input, an Operator, one or more Expressions (Expr) and the end of input.
+
+Abstract Syntax Tree:
+Represents the structure of the program written by the user.
+At the leaves of the tree are the numbers and operators - the actual data to be processed.
+At the branches are the rules to produce the desired output. Information on how to traverse the tree.
+
+This is what it looks like in mpc.h:
+typedef struct mpc_ast_t {
+	char* tag;
+	char* contents;
+	mpc_state_t state;
+	int children_num;
+	struct mpc_ast_t** children;
+} mpc_ast_t;
+
+Exploring the fields:
+	tag: (gives the rules) gives the string containing the rules for getting the particular item. 
+	     eg: expr|number|expr
+	contents: actual item. eg '5' 'sub' '+' '(' etc.
+	state: state the parser was in, when it found this node such as line number and column number.
+	children_num: children of a given node in AST.
+	children: array of the children of the node. it is actually a double pointer.
+	
+	we can get a node's children using children[i], array notation.
+
+	say we have mpc_ast_t* a = r.output;
+	then, 
+	we can get it's first child as such,
+	mpc_ast_t* c0 = a->children[0]; // we use the -> operator to access the children field since a is
+	a pointer to struct mpc_ast_t
+
+
+
